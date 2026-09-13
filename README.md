@@ -4,14 +4,16 @@ Code and reproduction pipeline for:
 
 > **Generalization of Machine-Learning Models for Solar Photovoltaic Power
 > Prediction Across Technology, Climate, and Time: A Transfer-Learning Study on
-> Two Continents**
-> Swaroop Naik, Kavita Shirsat — Vidyalankar Institute of Technology, Mumbai, India
+> Three Continents**
+> Swaroop Naik, Aditi Gawari, Ayush Mayekar, Chetan Katkar and Sneha Annappanavar
+> (mentor) — Vidyalankar Institute of Technology, Mumbai, India
 > *(arXiv preprint — link to be added on posting)*
 
 ML models predict PV power with near-perfect accuracy, but almost every published
 model is trained and tested on a **single site**, so nobody knows what happens
 when you deploy it somewhere else. This repository measures exactly that, across
-three kinds of distribution shift, on real public data from two continents.
+three kinds of distribution shift, on real public data from three continents:
+Australia, the USA and India.
 
 ---
 
@@ -325,8 +327,9 @@ exactly, so the India results are directly comparable with them.
 @article{naik2026pvgeneralization,
   title   = {Generalization of Machine-Learning Models for Solar Photovoltaic
              Power Prediction Across Technology, Climate, and Time:
-             A Transfer-Learning Study on Two Continents},
-  author  = {Naik, Swaroop and Shirsat, Kavita},
+             A Transfer-Learning Study on Three Continents},
+  author  = {Naik, Swaroop and Gawari, Aditi and Mayekar, Ayush and
+             Katkar, Chetan and Annappanavar, Sneha},
   journal = {arXiv preprint},
   year    = {2026}
 }
