@@ -1,0 +1,17 @@
+===== (a) KAGGLE QUALITY GATE: corr(irradiance, plant power), daylight hourly =====
+  Plant 1: 22 inverters, 412 daylight h, 2020-05-15 -> 2020-06-17, corr=0.994, timestamps missing >=1 inverter=3%
+  Plant 2: 22 inverters, 424 daylight h, 2020-05-15 -> 2020-06-17, corr=0.833, timestamps missing >=1 inverter=28%
+
+===== (b) PVGIS PV MODEL vs KAGGLE PLANT 1 (15-min records) =====
+  records=1612  Faiman U (PVGIS c-Si, 1.5 m/s)=36.2  best-fit U=34.9 (3.6% apart)
+  Faiman vs module sensor: R2=0.940  bias=-0.27 C
+  Huld driven by measured module temp  : R2=0.9793  bias=-0.0237 CF
+  Huld driven by Faiman-estimated temp : R2=0.9830  bias=-0.0175 CF
+
+===== (c) ERA5 2023 DAYLIGHT IRRADIANCE CLIMATE (GHI > 5 W/m^2) =====
+  site                     annual <400 h  <400 energy  mean GHI  JJAS <400 h  JJAS GHI  OND <400 h
+  Alice Springs (source)           42.3%        14.4%       491        46.8%       433       34.9%
+  Gaithersburg (source)            60.0%        28.4%       351        51.2%       407       72.9%
+  Mumbai                           48.1%        18.9%       434        59.6%       359       46.3%
+  Jodhpur                          45.3%        17.6%       423        48.0%       408       45.5%
+  Chennai                          45.0%        16.7%       452        48.3%       433       49.8%

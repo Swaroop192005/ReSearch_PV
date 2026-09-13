@@ -1,0 +1,57 @@
+[native] nw trained AU+US measured on 16,576 rows
+[native] nw trained India-native PVGIS on 500,403 rows
+[native] nw seed 42 done
+[native] nw seed 1 done
+[native] nw seed 2 done
+[native] nw seed 7 done
+[native] nw seed 123 done
+[native] w trained AU+US measured on 16,576 rows
+[native] w trained India-native PVGIS on 500,403 rows
+[native] w seed 42 done
+[native] w seed 1 done
+[native] w seed 2 done
+[native] w seed 7 done
+[native] w seed 123 done
+
+===== PRIOR HEAD-TO-HEAD on held-out Kaggle Plant 1 (mean of 5 seeds) =====
+                            zs_catboost  zs_mlp  tree_fs20  mlp_ft20  within
+weather prior                                                               
+nw      AU+US measured           0.9409  0.9441     0.9410    0.9860  0.9887
+        India-native PVGIS       0.9593  0.9526     0.9592    0.9627  0.9887
+w       AU+US measured           0.9002  0.8974     0.9024    0.9277  0.9885
+        India-native PVGIS       0.9645  0.9626     0.9645    0.9731  0.9885
+[lozo] nw central_highlands        R2=0.9959
+[lozo] nw coromandel_ne_monsoon    R2=0.9966
+[lozo] nw deccan_semiarid          R2=0.9961
+[lozo] nw eastern_humid            R2=0.9919
+[lozo] nw gangetic_plain           R2=0.9945
+[lozo] nw konkan_sw_monsoon        R2=0.9978
+[lozo] nw northeast_hills          R2=0.9796
+[lozo] nw southern_peninsula       R2=0.9970
+[lozo] nw thar_arid                R2=0.9940
+[lozo] nw trans_himalaya           R2=0.9114
+[lozo] w central_highlands        R2=0.9985
+[lozo] w coromandel_ne_monsoon    R2=0.9982
+[lozo] w deccan_semiarid          R2=0.9973
+[lozo] w eastern_humid            R2=0.9954
+[lozo] w gangetic_plain           R2=0.9965
+[lozo] w konkan_sw_monsoon        R2=0.9986
+[lozo] w northeast_hills          R2=0.9844
+[lozo] w southern_peninsula       R2=0.9988
+[lozo] w thar_arid                R2=0.9950
+[lozo] w trans_himalaya           R2=0.7691
+
+===== LEAVE-ONE-ZONE-OUT (CatBoost) =====
+weather                    nw       w
+zone                                 
+central_highlands      0.9959  0.9985
+coromandel_ne_monsoon  0.9966  0.9982
+deccan_semiarid        0.9961  0.9973
+eastern_humid          0.9919  0.9954
+gangetic_plain         0.9945  0.9965
+konkan_sw_monsoon      0.9978  0.9986
+northeast_hills        0.9796  0.9844
+southern_peninsula     0.9970  0.9988
+thar_arid              0.9940  0.9950
+trans_himalaya         0.9114  0.7691
+### JOB B COMPLETE

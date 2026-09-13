@@ -1,0 +1,232 @@
+### [A1] matrix_experiment --weather (AU/US weather-variant baseline)
+[matrix] model=CatBoost  sites=['Calyxo_CdTe', 'Kyocera_polySi', 'NIST_Ground_monoSi', 'Trina_monoSi']  weather=ON  seeds=[42, 1, 2, 7, 123]
+
+===== MEAN R2 MATRIX (rows=source, cols=target; diagonal=within) =====
+target              Calyxo_CdTe  ...  Trina_monoSi
+source                           ...              
+Calyxo_CdTe               0.974  ...         0.941
+Kyocera_polySi            0.970  ...         0.944
+NIST_Ground_monoSi        0.954  ...         0.912
+Trina_monoSi              0.962  ...         0.942
+
+[4 rows x 4 columns]
+
+===== GAP by shift type (mean R2 drop, 95% CI) =====
+  cross-technology  : n=30 mean=0.0044 std=0.0073 95%CI=[0.0017,0.0071]
+  cross-climate     : n=30 mean=0.0295 std=0.0100 95%CI=[0.0258,0.0333]
+
+===== SIGNIFICANCE (cross-climate gap > cross-technology gap) =====
+  Mann-Whitney U=898.0, one-sided p=1.84e-11
+  Welch t=11.09, two-sided p=2.02e-15
+  ratio of mean gaps (climate/technology) = 6.7x
+
+[done] written to /Users/swaroopnaik1905/pv-india-regional/paper_exp/results
+### [A2] india_matrix
+[india_matrix] weather=nw done
+[india_matrix] weather=w done
+
+===== INDIA ALL-PAIRS | weather=OFF | CatBoost, 5 seeds =====
+  India within-site R2 (80/20): 0.9874
+  paper AU<->US cross-climate gap 0.0244 (n=30), cross-technology 0.0014
+  to-India   gap: n=20 mean=0.0520 95%CI=[0.0417, 0.0622]  = 2.13x AU<->US
+      Calyxo_CdTe          R2=0.9400  gap=0.0473
+      Kyocera_polySi       R2=0.9054  gap=0.0820
+      NIST_Ground_monoSi   R2=0.9637  gap=0.0237
+      Trina_monoSi         R2=0.9324  gap=0.0549
+  from-India gap: n=20 mean=0.0456 95%CI=[0.0384, 0.0528]  = 1.87x AU<->US
+      Calyxo_CdTe          R2=0.9138  gap=0.0443
+      Kyocera_polySi       R2=0.8852  gap=0.0634
+      NIST_Ground_monoSi   R2=0.9541  gap=0.0252
+      Trina_monoSi         R2=0.8664  gap=0.0495
+  to-India gap > AU<->US gap?  Mann-Whitney U=521 p=6.31e-06; Welch t=5.18 p=2.14e-05
+
+===== INDIA ALL-PAIRS | weather=ON | CatBoost, 5 seeds =====
+  India within-site R2 (80/20): 0.9858
+  paper AU<->US cross-climate gap 0.0295 (n=30), cross-technology 0.0044
+  to-India   gap: n=20 mean=0.0871 95%CI=[0.0785, 0.0957]  = 2.95x AU<->US
+      Calyxo_CdTe          R2=0.9077  gap=0.0781
+      Kyocera_polySi       R2=0.8755  gap=0.1103
+      NIST_Ground_monoSi   R2=0.9214  gap=0.0644
+      Trina_monoSi         R2=0.8904  gap=0.0954
+  from-India gap: n=20 mean=0.0995 95%CI=[0.0907, 0.1082]  = 3.37x AU<->US
+      Calyxo_CdTe          R2=0.8859  gap=0.0883
+      Kyocera_polySi       R2=0.8529  gap=0.1185
+      NIST_Ground_monoSi   R2=0.9112  gap=0.0770
+      Trina_monoSi         R2=0.8278  gap=0.1141
+  to-India gap > AU<->US gap?  Mann-Whitney U=600 p=1.51e-09; Welch t=12.78 p=7.39e-13
+### [A3] india_transfer
+[india_transfer] nw Trina_monoSi done
+[india_transfer] nw NIST_Ground_monoSi done
+[india_transfer] nw AU+US pooled done
+[india_transfer] w Trina_monoSi done
+[india_transfer] w NIST_Ground_monoSi done
+[india_transfer] w AU+US pooled done
+
+===== Trina_monoSi -> India | weather=OFF | 20% target (k=82) =====
+  method                seed42 R2  seed42 rec   mean R2  mean rec  rec sd
+  zero_shot                0.9286        0.0%    0.9302      0.0%    0.0
+  CORAL                    0.9286        0.0%    0.9302      0.0%    0.0
+  importance_weight        0.9271       -2.5%    0.9319      3.0%    5.6
+  few_shot_tree            0.9287        0.1%    0.9307      0.9%    1.3
+  mlp_finetune             0.9766       82.8%    0.9804     85.9%    4.1
+  within_target            0.9866      100.0%    0.9887    100.0%    0.0
+  gap (ceiling - zero-shot): seed42 0.0581, mean 0.0585
+
+===== NIST_Ground_monoSi -> India | weather=OFF | 20% target (k=82) =====
+  method                seed42 R2  seed42 rec   mean R2  mean rec  rec sd
+  zero_shot                0.9601        0.0%    0.9624      0.0%    0.0
+  CORAL                    0.9601        0.0%    0.9624      0.0%    0.0
+  importance_weight        0.9597       -1.4%    0.9621     -1.7%    3.6
+  few_shot_tree            0.9610        3.4%    0.9638      5.0%    3.3
+  mlp_finetune             0.9718       44.1%    0.9741     45.0%    5.9
+  within_target            0.9866      100.0%    0.9887    100.0%    0.0
+  gap (ceiling - zero-shot): seed42 0.0266, mean 0.0263
+
+===== AU+US pooled -> India | weather=OFF | 20% target (k=82) =====
+  method                seed42 R2  seed42 rec   mean R2  mean rec  rec sd
+  zero_shot                0.9371        0.0%    0.9409      0.0%    0.0
+  CORAL                    0.9371        0.0%    0.9409      0.0%    0.0
+  importance_weight        0.9381        1.9%    0.9417      1.6%    0.8
+  few_shot_tree            0.9373        0.2%    0.9410      0.1%    0.3
+  mlp_finetune             0.9818       90.2%    0.9860     94.5%    3.6
+  within_target            0.9866      100.0%    0.9887    100.0%    0.0
+  gap (ceiling - zero-shot): seed42 0.0495, mean 0.0478
+
+===== Trina_monoSi -> India | weather=ON | 20% target (k=82) =====
+  method                seed42 R2  seed42 rec   mean R2  mean rec  rec sd
+  zero_shot                0.8730        0.0%    0.8863      0.0%    0.0
+  CORAL                    0.7075     -143.8%    0.7815   -100.5%   31.1
+  importance_weight        0.8697       -2.9%    0.8821     -4.3%    3.5
+  few_shot_tree            0.8822        8.0%    0.8942      7.7%    0.9
+  mlp_finetune             0.9203       41.1%    0.9297     42.6%    1.3
+  within_target            0.9881      100.0%    0.9885    100.0%    0.0
+  gap (ceiling - zero-shot): seed42 0.1151, mean 0.1022
+
+===== NIST_Ground_monoSi -> India | weather=ON | 20% target (k=82) =====
+  method                seed42 R2  seed42 rec   mean R2  mean rec  rec sd
+  zero_shot                0.9121        0.0%    0.9197      0.0%    0.0
+  CORAL                    0.9218       12.7%    0.9169     -7.0%   28.3
+  importance_weight        0.9163        5.5%    0.9225      4.1%    1.6
+  few_shot_tree            0.9221       13.2%    0.9286     12.9%    1.4
+  mlp_finetune             0.9454       43.8%    0.9494     43.4%    2.5
+  within_target            0.9881      100.0%    0.9885    100.0%    0.0
+  gap (ceiling - zero-shot): seed42 0.0760, mean 0.0688
+
+===== AU+US pooled -> India | weather=ON | 20% target (k=82) =====
+  method                seed42 R2  seed42 rec   mean R2  mean rec  rec sd
+  zero_shot                0.8889        0.0%    0.9002      0.0%    0.0
+  CORAL                    0.7519     -138.2%    0.7811   -135.8%   21.4
+  importance_weight        0.8885       -0.4%    0.9004      0.3%    1.7
+  few_shot_tree            0.8916        2.7%    0.9024      2.4%    0.5
+  mlp_finetune             0.9175       28.8%    0.9277     31.2%    1.4
+  within_target            0.9881      100.0%    0.9885    100.0%    0.0
+  gap (ceiling - zero-shot): seed42 0.0992, mean 0.0883
+### [A4] india_error
+
+=== ERROR BY IRRADIANCE | Trina_monoSi -> India | weather=OFF | CatBoost ===
+irr(W/m2)       n  RMSE within  RMSE cross  bias cross
+0-200         104       0.0082      0.0589     -0.0533
+200-400        71       0.0276      0.1000     -0.0950
+400-600       109       0.0246      0.0663     -0.0616
+600-800        85       0.0338      0.0494     -0.0356
+800-1000       42       0.0448      0.1143     -0.1005
+>1000           1       0.1121      0.0576     -0.0576
+  overall RMSE within 0.0279  cross 0.0749
+  calibration: actual = 0.998 * pred +0.065;  mean bias -0.0638 CF;  under-predicts 98% of hours
+
+=== ERROR BY IRRADIANCE | AU+US pooled -> India | weather=OFF | CatBoost ===
+irr(W/m2)       n  RMSE within  RMSE cross  bias cross
+0-200         104       0.0082      0.0346     -0.0308
+200-400        71       0.0276      0.0727     -0.0665
+400-600       109       0.0246      0.0732     -0.0694
+600-800        85       0.0338      0.0643     -0.0541
+800-1000       42       0.0448      0.1105     -0.0981
+>1000           1       0.1121      0.0448     -0.0448
+  overall RMSE within 0.0279  cross 0.0688
+  calibration: actual = 1.056 * pred +0.034;  mean bias -0.0589 CF;  under-predicts 98% of hours
+
+=== ERROR BY IRRADIANCE | Trina_monoSi -> India | weather=ON | CatBoost ===
+irr(W/m2)       n  RMSE within  RMSE cross  bias cross
+0-200         104       0.0140      0.0594     -0.0523
+200-400        71       0.0265      0.1088     -0.1036
+400-600       109       0.0249      0.0939     -0.0871
+600-800        85       0.0334      0.0929     -0.0800
+800-1000       42       0.0484      0.1384     -0.1265
+>1000           1       0.0790      0.0499     -0.0499
+  overall RMSE within 0.0286  cross 0.0949
+  calibration: actual = 1.047 * pred +0.064;  mean bias -0.0836 CF;  under-predicts 99% of hours
+
+=== ERROR BY IRRADIANCE | AU+US pooled -> India | weather=ON | CatBoost ===
+irr(W/m2)       n  RMSE within  RMSE cross  bias cross
+0-200         104       0.0140      0.0384     -0.0331
+200-400        71       0.0265      0.0811     -0.0730
+400-600       109       0.0249      0.0982     -0.0928
+600-800        85       0.0334      0.0991     -0.0891
+800-1000       42       0.0484      0.1341     -0.1240
+>1000           1       0.0790      0.0486     -0.0486
+  overall RMSE within 0.0286  cross 0.0890
+  calibration: actual = 1.099 * pred +0.035;  mean bias -0.0766 CF;  under-predicts 99% of hours
+### [A5] india_context
+===== (a) KAGGLE QUALITY GATE: corr(irradiance, plant power), daylight hourly =====
+  Plant 1: 22 inverters, 412 daylight h, 2020-05-15 -> 2020-06-17, corr=0.994, timestamps missing >=1 inverter=3%
+  Plant 2: 22 inverters, 424 daylight h, 2020-05-15 -> 2020-06-17, corr=0.833, timestamps missing >=1 inverter=28%
+
+===== (b) PVGIS PV MODEL vs KAGGLE PLANT 1 (15-min records) =====
+  records=1612  Faiman U (PVGIS c-Si, 1.5 m/s)=36.2  best-fit U=34.9 (3.6% apart)
+  Faiman vs module sensor: R2=0.940  bias=-0.27 C
+  Huld driven by measured module temp  : R2=0.9793  bias=-0.0237 CF
+  Huld driven by Faiman-estimated temp : R2=0.9830  bias=-0.0175 CF
+
+===== (c) ERA5 2023 DAYLIGHT IRRADIANCE CLIMATE (GHI > 5 W/m^2) =====
+  site                     annual <400 h  <400 energy  mean GHI  JJAS <400 h  JJAS GHI  OND <400 h
+Traceback (most recent call last):
+  File "/Users/swaroopnaik1905/pv-india-regional/paper_exp/india_context.py", line 84, in <module>
+    a = share(np.ones_like(day)); j = share(t.month.isin([6, 7, 8, 9]).values)
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'numpy.ndarray' object has no attribute 'values'
+### [A6] india_recovery
+[india_recovery] nw Trina_monoSi done
+[india_recovery] nw AU+US pooled done
+[india_recovery] w Trina_monoSi done
+[india_recovery] w AU+US pooled done
+
+===== Trina_monoSi -> India | weather=OFF | zero-shot 0.9302 ceiling 0.9887 gap 0.0585 (5 seeds) =====
+     k  gain R2    rec  tree R2    rec   mlp R2    rec       a
+     5   0.9587    49%   0.9301    -0%   0.9701    68%   1.114
+    10   0.9615    53%   0.9302    -0%   0.9761    78%   1.120
+    20   0.9621    54%   0.9301    -0%   0.9776    81%   1.123
+    40   0.9638    57%   0.9302     0%   0.9790    83%   1.115
+    82   0.9643    58%   0.9312     2%   0.9804    86%   1.104
+   165   0.9644    58%   0.9343     7%   0.9814    87%   1.105
+   247   0.9645    58%   0.9371    12%   0.9877    98%   1.102
+
+===== AU+US pooled -> India | weather=OFF | zero-shot 0.9409 ceiling 0.9887 gap 0.0478 (5 seeds) =====
+     k  gain R2    rec  tree R2    rec   mlp R2    rec       a
+     5   0.9798    81%   0.9408    -0%   0.9744    71%   1.121
+    10   0.9797    81%   0.9409    -0%   0.9815    84%   1.127
+    20   0.9797    81%   0.9411     0%   0.9819    84%   1.131
+    40   0.9811    84%   0.9411     1%   0.9855    93%   1.124
+    82   0.9815    85%   0.9411     0%   0.9860    94%   1.117
+   165   0.9817    85%   0.9425     3%   0.9864    95%   1.116
+   247   0.9817    85%   0.9428     4%   0.9890   101%   1.114
+
+===== Trina_monoSi -> India | weather=ON | zero-shot 0.8863 ceiling 0.9885 gap 0.1022 (5 seeds) =====
+     k  gain R2    rec  tree R2    rec   mlp R2    rec       a
+     5   0.9515    64%   0.8872     1%   0.9292    42%   1.196
+    10   0.9546    67%   0.8877     1%   0.9295    42%   1.193
+    20   0.9574    69%   0.8889     3%   0.9295    42%   1.179
+    40   0.9590    71%   0.8908     4%   0.9297    43%   1.173
+    82   0.9599    72%   0.8945     8%   0.9297    43%   1.155
+   165   0.9602    72%   0.9029    16%   0.9298    43%   1.157
+   247   0.9603    72%   0.9102    24%   0.9522    65%   1.155
+
+===== AU+US pooled -> India | weather=ON | zero-shot 0.9002 ceiling 0.9885 gap 0.0883 (5 seeds) =====
+     k  gain R2    rec  tree R2    rec   mlp R2    rec       a
+     5   0.9742    84%   0.8996    -1%   0.9272    31%   1.180
+    10   0.9741    84%   0.8998    -0%   0.9274    31%   1.183
+    20   0.9754    85%   0.9002     0%   0.9275    31%   1.178
+    40   0.9761    86%   0.9014     1%   0.9277    31%   1.174
+    82   0.9765    86%   0.9020     2%   0.9277    31%   1.160
+   165   0.9768    87%   0.9044     5%   0.9277    31%   1.160
+   247   0.9769    87%   0.9065     7%   0.9506    57%   1.159
+### JOB A COMPLETE

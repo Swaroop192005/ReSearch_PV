@@ -36,6 +36,13 @@ Two further results:
   classification scores F1 = 0.999 within an operating mode but collapses across
   modes — MCC and Cohen's κ drop to ≈0.00 for MPPT→IPPT, a collapse that an F1 of
   0.88 completely hides.
+- **India, a third climate (paper Section V).** Transfer into a measured Indian
+  plant costs **2.1×** the Australia↔USA gap (ΔR² = 0.052, p = 6×10⁻⁶). A
+  fine-tuned MLP still recovers 86–95% of it from 82 labelled hours, and a single
+  gain factor fitted on 5 hours recovers up to 81%, while few-shot tree
+  fine-tuning recovers ≤5%. A prior trained only on PVGIS simulations of 10
+  Indian climate zones beats the foreign prior zero-shot (R² 0.959 vs 0.941).
+  See [Section 7](#7-india-extension-paper-section-v).
 
 ---
 
@@ -82,7 +89,9 @@ Arrays used: Trina (5.3 kW, mono-Si), Kyocera (5.4 kW, poly-Si), Calyxo (5.4 kW,
 CdTe) at Alice Springs; NIST Ground (~217 kW, mono-Si). Calendar year 2017 for the
 main analysis; 2019 and 2021 for the temporal experiment.
 
-`data/`, `results/` and `figures/` are created automatically and are git-ignored.
+`data/`, `results/` and `figures/` are created automatically. `data/` and
+`figures/` are git-ignored; `results/` holds the committed India reference
+outputs (Section 7).
 
 ---
 
@@ -170,6 +179,8 @@ earlier exploratory script (degradation / RMSE / recovery / weather plots) that
 writes to `figures/` and uses its own unrelated numbering — it is not the source
 of any paper figure.
 
+**India extension** — `india_*.py` and `make_india_figures.py`; see Section 7.
+
 ---
 
 ## 6. Methodological notes
@@ -210,7 +221,105 @@ of any paper figure.
 
 ---
 
-## 7. Citation
+## 7. India extension (paper Section V)
+
+Section V of the paper extends the benchmark to a third, tropical,
+monsoon-driven climate. The pipeline is unchanged: CatBoost and the same MLP as
+`transfer_advanced.py`, capacity-factor target, irradiance (+ ambient
+temperature in the weather variant), 5 seeds, 60/40 transfer split. The
+measured target is **Kaggle Plant 1**, an anonymised grid-connected Indian
+plant. An **India-native prior** is trained on PVGIS simulations of 24 points in
+10 Indian solar-climate zones.
+
+> **Measured vs simulated.** Every score on the Indian plant is measured on real
+> data. PVGIS output is simulated: it is used only to train the India-native
+> prior and as the target of the leave-one-zone-out analysis, which the paper
+> labels as simulated.
+
+### 7.1 Data
+
+| Dataset | Used for | Where |
+|---|---|---|
+| **Kaggle *Solar Power Generation Data***, Plant 1 | measured Indian target — 412 daylight hours, 15 May–17 Jun 2020 | [kaggle.com/datasets/anikannal/solar-power-generation-data](https://www.kaggle.com/datasets/anikannal/solar-power-generation-data) → put the 4 CSVs in `data/kaggle/` |
+| **PVGIS 5.3** (`PVGIS-ERA5`), 2019–2023 | India-native prior; leave-one-zone-out (simulated) | downloaded by `india_pvgis.py` |
+| **ERA5** via the Open-Meteo archive, 2023 | monsoon irradiance context (Section V-H) | downloaded by `india_era5.py` |
+
+None of these is redistributed here.
+
+### 7.2 Build the India data
+
+Run from the repository root, after building `data/pv_multisite.csv` (Section 3):
+
+```bash
+python3 india_kaggle_prep.py
+python3 india_pvgis.py
+python3 india_era5.py
+```
+
+- `india_kaggle_prep.py` sums the 22 inverters, resamples to hourly, converts
+  `IRRADIATION` to W/m² (×1000) and applies the quality gate — Plant 1 passes,
+  Plant 2 is excluded because its output tracks inverter dropouts rather than
+  the weather → `data/pv_india_measured.csv`.
+- `india_pvgis.py` makes one PVGIS request per point (24 in total, cached in
+  `data/pvgis_cache/`) → `data/pv_india_pvgis.csv`, 500,403 daylight hours.
+- `india_era5.py` downloads 2023 hourly GHI for Alice Springs, Gaithersburg,
+  Mumbai, Jodhpur and Chennai → `data/era5/`.
+
+The India comparisons also read the AU↔US reference matrices:
+
+```bash
+python3 matrix_experiment.py --task power
+python3 matrix_experiment.py --task power --weather
+```
+
+### 7.3 Reproduce Section V
+
+| Paper element | Command |
+|---|---|
+| **Fig 11** gap to/from India vs AU↔US, significance tests | `python3 india_matrix.py` |
+| **Table 7** five-method adaptation with India as target | `python3 india_transfer.py` |
+| **Fig 13** recovery vs labelled Indian hours (gain / tree / MLP) | `python3 india_recovery.py` |
+| **Table 8 / Fig 14** India error by irradiance | `python3 india_error.py` |
+| **Fig 12** India-native vs AU+US prior; **Table 9** leave-one-zone-out | `python3 india_native.py` (slow: trains on 500k rows) |
+| Plant 1/2 quality gate, PVGIS physics check (V-F), monsoon context (V-H) | `python3 india_context.py` |
+| **Figs 11–14** | `python3 make_india_figures.py` → `figures/india/` |
+
+| Paper | File |
+|---|---|
+| Figure 11 | `fig11_india_gap.png` |
+| Figure 12 | `fig14_india_prior.png` |
+| Figure 13 | `fig12_india_recovery.png` |
+| Figure 14 | `fig13_india_err.png` |
+
+File names follow the order the figures were produced; LaTeX float placement
+numbers them differently in the paper.
+
+### 7.4 Reference outputs (committed)
+
+The exact outputs behind Section V are committed in `results/`, so every India
+number in the paper can be checked without rerunning anything:
+
+- `india_matrix_raw.csv`, `india_transfer_raw.csv`, `india_recovery_raw.csv`,
+  `india_error_by_irradiance.csv`, `india_native_raw.csv`,
+  `india_lozo_catboost.csv` — every seed and every method.
+- `matrix_raw_power_nw.csv`, `matrix_raw_power_w.csv` — the AU↔US reference the
+  India gaps are compared against.
+- `india_jobA.log`, `india_jobB.log`, `india_context.log` — full console output.
+  Step A5 in `india_jobA.log` ends in a traceback from a since-fixed bug in
+  `india_context.py`; `india_context.log` is the complete rerun with the fixed
+  script.
+
+Rerunning a script overwrites its CSV, and `git diff results/` then shows
+whether your run matches.
+
+Environment used: Python 3.14.2, scikit-learn 1.9.0, CatBoost 1.2.10, pandas
+3.0.5, NumPy 2.5.2, SciPy 1.18.1, Matplotlib 3.11.2 (Apple silicon, CPU only).
+The same environment reproduces the published Table 3 and Table 4 numbers
+exactly, so the India results are directly comparable with them.
+
+---
+
+## 8. Citation
 
 ```bibtex
 @article{naik2026pvgeneralization,
@@ -228,10 +337,12 @@ links in Section 2.
 
 ---
 
-## 8. License
+## 9. License
 
 Code in this repository is released under the **MIT License** — see [`LICENSE`](LICENSE).
 
 The three datasets are **not** covered by that licence and remain under their own
 respective terms; obtain them from the sources in Section 2 and cite them
-accordingly.
+accordingly. The same applies to the Kaggle, PVGIS and ERA5 data used by the
+India extension (Section 7); Open-Meteo/ERA5 data are CC BY 4.0 and require
+attribution.
