@@ -1,11 +1,16 @@
 # Cross-Site Generalization of ML Models for PV Power Prediction
 
+> **This repository has moved.** The code, now including the India extension
+> (Australia, the USA and India), lives at
+> **[PV-CrossSite-Generalization](https://github.com/Swaroop192005/PV-CrossSite-Generalization)**.
+> This repository is archived and no longer updated.
+
 Code and reproduction pipeline for:
 
 > **Generalization of Machine-Learning Models for Solar Photovoltaic Power
 > Prediction Across Technology, Climate, and Time: A Transfer-Learning Study on
 > Two Continents**
-> Swaroop Naik, Kavita Shirsat — Vidyalankar Institute of Technology, Mumbai, India
+> Swaroop Naik — Vidyalankar Institute of Technology, Mumbai, India
 > *(arXiv preprint — link to be added on posting)*
 
 ML models predict PV power with near-perfect accuracy, but almost every published
@@ -217,7 +222,7 @@ of any paper figure.
   title   = {Generalization of Machine-Learning Models for Solar Photovoltaic
              Power Prediction Across Technology, Climate, and Time:
              A Transfer-Learning Study on Two Continents},
-  author  = {Naik, Swaroop and Shirsat, Kavita},
+  author  = {Naik, Swaroop},
   journal = {arXiv preprint},
   year    = {2026}
 }
